@@ -3,17 +3,38 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+variables:
+  - group: terraform-backend-kv
+
 trigger:
 - main
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+  - stage: plan
+    jobs:
+    - job: terraform_plan
+      steps:
+      - script: echo Hello, world!
+        displayName: 'Run a one-line script plan'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+      - script: |
+          echo Add other tasks to build, test, and deploy your project.
+          echo See https://aka.ms/yaml
+        displayName: 'Run a multi-line script plan'
+
+  - stage: apply
+    jobs:
+    - job: terraform_apply
+      steps:
+      - script: echo Hello, world!
+        displayName: 'Run a one-line script apply'
+
+      - script: |
+          echo Add other tasks to build, test, and deploy your project.
+          echo See https://aka.ms/yaml
+        displayName: 'Run a multi-line script apply'
+
+
