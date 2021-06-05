@@ -17,8 +17,8 @@ stages:
     jobs:
     - job: terraform_plan
       steps:
-      - script: echo Hello, world!
-        displayName: 'Run a one-line script plan'
+      - script: terraform --version
+        displayName: 'check terraform version'
 
       - script: |
           echo Add other tasks to build, test, and deploy your project.
