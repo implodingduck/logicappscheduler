@@ -31,6 +31,7 @@ stages:
             export ARM_CLIENT_SECRET=$servicePrincipalKey
             export ARM_TENANT_ID=$tenantId
             ./env_setup.sh
+            echo $TF_VAR_container_name
             terraform init --backend-config=backend.tfvars
       - script: |
           terraform plan -out theplan
