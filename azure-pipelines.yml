@@ -41,7 +41,7 @@ stages:
           TF_VAR_key: $(TF_VAR_key)
           TF_VAR_container_name: $(TF_VAR_container_name)
       - task: AzureCLI@2
-        displayName: "Terraform Init"
+        displayName: "Terraform Plan"
         inputs:
           azureSubscription: ARM_SUBSCRIPTION
           scriptType: bash
