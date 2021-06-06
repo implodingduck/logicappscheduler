@@ -48,7 +48,7 @@ module "function" {
       "COSMOSDB_NAME"            = "${local.das_func_name}-db"
       "COSMOSDB_CONTAINER"       = "${local.das_func_name}-dbcontainer"
     }
-    site_config {
+    site_config = {
       use_32_bit_worker_process   = false
       linux_fx_version = "Python|3.8"        
       ftps_state = "Disabled"
