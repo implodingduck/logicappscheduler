@@ -18,7 +18,7 @@ stages:
     - job: terraform_plan
       variables:
       - name: TF_VAR_container_name
-        value: $[container-name]
+        value: $[variable.container-name]
       steps:
       - script: terraform --version
         displayName: 'check terraform version'
