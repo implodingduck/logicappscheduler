@@ -35,6 +35,7 @@ stages:
             terraform init --backend-config=backend.tfvars
         env:
           TF_VAR_subscription_id: $(TF_VAR_subscription_id)
+          TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
       - script: |
           terraform plan -out theplan
         displayName: 'terraform plan'
