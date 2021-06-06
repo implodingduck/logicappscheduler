@@ -9,12 +9,14 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+- group: terraform-backend-kv
+
 stages:
   - stage: plan
     jobs:
     - job: terraform_plan
       variables:
-      - group: terraform-backend-kv
       - name: TF_VAR_container_name
         value: $[variables.container-name]
       steps:
