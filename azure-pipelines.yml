@@ -27,11 +27,11 @@ stages:
           addSpnToEnvironment: true
           scriptLocation: inlineScript
           inlineScript: |
-          export ARM_CLIENT_ID=$servicePrincipalId
-          export ARM_CLIENT_SECRET=$servicePrincipalKey
-          export ARM_TENANT_ID=$tenantId
-          ./env_setup.sh
-          terraform init --backend-config=backend.tfvars
+            export ARM_CLIENT_ID=$servicePrincipalId
+            export ARM_CLIENT_SECRET=$servicePrincipalKey
+            export ARM_TENANT_ID=$tenantId
+            ./env_setup.sh
+            terraform init --backend-config=backend.tfvars
       - script: |
           terraform plan -out theplan
         displayName: 'terraform plan'
