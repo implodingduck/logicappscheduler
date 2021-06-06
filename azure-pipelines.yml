@@ -4,9 +4,9 @@
 # https://aka.ms/yaml
 
 variables:
-  - group: terraform-backend-kv
-  - name: TF_VAR_container_name
-    value: $[variables.container-name]
+- group: terraform-backend-kv
+- name: TF_VAR_container_name
+  value: $[variables.container-name]
 
 trigger:
 - main
