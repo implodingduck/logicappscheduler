@@ -17,8 +17,6 @@ stages:
     jobs:
     - job: terraform_plan
       steps:
-        env:
-          TF_VAR_subscription_id: $(TF_VAR_subscription_id)
       - script: terraform --version
         displayName: 'check terraform version'
       - task: AzureCLI@2
@@ -35,6 +33,8 @@ stages:
             ./env_setup.sh
             echo $TF_VAR_container_name
             terraform init --backend-config=backend.tfvars
+        env:
+          TF_VAR_subscription_id: $(TF_VAR_subscription_id)
       - script: |
           terraform plan -out theplan
         displayName: 'terraform plan'
