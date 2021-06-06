@@ -19,7 +19,9 @@ stages:
       steps:
       - script: terraform --version
         displayName: 'check terraform version'
-
+      - script: |
+          terraform init
+        displayName: 'terraform init'
       - script: |
           terraform plan -out theplan
         displayName: 'terraform plan'
