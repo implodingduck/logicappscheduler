@@ -19,12 +19,19 @@ stages:
       steps:
       - script: terraform --version
         displayName: 'check terraform version'
-      - script: |
-          echo "Testing stuff"
-          echo $(TF_VAR_container_name)
+      - task: AzureCLI@2
+        displayName: "Terraform Init"
+        inputs:
+          azureSubscription: $[ARM_SUBSCRIPTION]
+          scriptType: bash
+          addSpnToEnvironment: true
+          scriptLocation: inlineScript
+          inlineScript: |
+          export ARM_CLIENT_ID=$servicePrincipalId
+          export ARM_CLIENT_SECRET=$servicePrincipalKey
+          export ARM_TENANT_ID=$tenantId
           ./env_setup.sh
           terraform init --backend-config=backend.tfvars
-        displayName: 'terraform init'
       - script: |
           terraform plan -out theplan
         displayName: 'terraform plan'
