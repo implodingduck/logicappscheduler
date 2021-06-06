@@ -26,6 +26,9 @@ stages:
           terraform init
         displayName: 'terraform init'
       - script: |
+          echo "Testing stuff"
+          echo $(TF_VAR_container_name)
+          echo $(container-name)
           terraform plan -out theplan
         displayName: 'terraform plan'
 
