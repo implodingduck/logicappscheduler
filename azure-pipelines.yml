@@ -22,7 +22,7 @@ stages:
       - task: AzureCLI@2
         displayName: "Terraform Init"
         inputs:
-          azureSubscription: $[ARM_SUBSCRIPTION]
+          azureSubscription: ARM_SUBSCRIPTION
           scriptType: bash
           addSpnToEnvironment: true
           scriptLocation: inlineScript
