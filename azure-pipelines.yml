@@ -10,15 +10,12 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-- group: terraform-backend-kv
+- group: terraform-backend-library
 
 stages:
   - stage: plan
     jobs:
     - job: terraform_plan
-      variables:
-      - name: TF_VAR_container_name
-        value: $[ variablegroups.terraform-backend-kv.container-name ]
       steps:
       - script: terraform --version
         displayName: 'check terraform version'
@@ -28,7 +25,6 @@ stages:
       - script: |
           echo "Testing stuff"
           echo $(TF_VAR_container_name)
-          echo $(container-name)
           terraform plan -out theplan
         displayName: 'terraform plan'
 
