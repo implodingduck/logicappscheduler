@@ -17,6 +17,8 @@ stages:
     jobs:
     - job: terraform_plan
       steps:
+        env:
+          TF_VAR_subscription_id: $(TF_VAR_subscription_id)
       - script: terraform --version
         displayName: 'check terraform version'
       - task: AzureCLI@2
