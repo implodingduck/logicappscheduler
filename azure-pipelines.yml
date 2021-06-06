@@ -59,6 +59,7 @@ stages:
           TF_VAR_resource_group_name: $(TF_VAR_resource_group_name)
           TF_VAR_key: $(TF_VAR_key)
           TF_VAR_container_name: $(TF_VAR_container_name)
+          TF_VAR_location: $(TF_VAR_location)
   - stage: apply
     jobs:
     - job: terraform_apply
