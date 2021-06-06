@@ -3,11 +3,6 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-variables:
-- group: terraform-backend-kv
-- name: TF_VAR_container_name
-  value: $[variables.container-name]
-
 trigger:
 - main
 
@@ -18,6 +13,10 @@ stages:
   - stage: plan
     jobs:
     - job: terraform_plan
+      variables:
+      - group: terraform-backend-kv
+      - name: TF_VAR_container_name
+        value: $[variables.container-name]
       steps:
       - script: terraform --version
         displayName: 'check terraform version'
