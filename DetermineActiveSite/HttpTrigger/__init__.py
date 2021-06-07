@@ -11,7 +11,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     client = CosmosClient(os.environ.get('COSMOSDB_ENDPOINT'), os.environ.get('COSMOSDB_KEY'))
     db = client.get_database_client(os.environ.get('COSMOSDB_NAME'))
     container = db.get_container_client(os.environ.get('COSMOSDB_CONTAINER'))
-    return func.HttpResponse(f"Hello there! The DetermineActiveSite HTTP triggered function executed successfully.")
+    #query = "SELECT * FROM c WHERE c.id=@id"
+    item = container.read_item(item='activesite', partition_key='activesite')
+
+    return func.HttpResponse(f"Hello there! The DetermineActiveSite HTTP triggered function executed successfully. Active Site: {item['value']}")
     # name = req.params.get('name')
     # if not name:
     #     try:
