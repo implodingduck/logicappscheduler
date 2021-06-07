@@ -40,6 +40,7 @@ module "function" {
     func_name = local.das_func_name
     resource_group_name = azurerm_resource_group.rg.name
     resource_group_location = azurerm_resource_group.rg.location
+    working_dir = "DetermineActiveSite"
     app_settings = {
       "FUNCTIONS_WORKER_RUNTIME" = "python"
       "COSMOSDB_ENDPOINT"        = azurerm_cosmosdb_account.cosmos.endpoint
