@@ -69,6 +69,27 @@ stages:
       - download: current
         artifact: theplan
       - task: AzureCLI@2
+        displayName: "Terraform Init"
+        inputs:
+          azureSubscription: ARM_SUBSCRIPTION
+          scriptType: bash
+          addSpnToEnvironment: true
+          scriptLocation: inlineScript
+          inlineScript: |
+            echo "starting..."
+            export ARM_CLIENT_ID=$servicePrincipalId
+            export ARM_CLIENT_SECRET=$servicePrincipalKey
+            export ARM_TENANT_ID=$tenantId
+            ./env_setup.sh
+            echo $TF_VAR_container_name
+            terraform init --backend-config=backend.tfvars
+        env:
+          TF_VAR_subscription_id: $(TF_VAR_subscription_id)
+          TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
+          TF_VAR_resource_group_name: $(TF_VAR_resource_group_name)
+          TF_VAR_key: $(TF_VAR_key)
+          TF_VAR_container_name: $(TF_VAR_container_name)
+      - task: AzureCLI@2
         displayName: "Terraform Apply"
         inputs:
           azureSubscription: ARM_SUBSCRIPTION
