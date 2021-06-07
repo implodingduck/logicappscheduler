@@ -60,16 +60,33 @@ stages:
           TF_VAR_key: $(TF_VAR_key)
           TF_VAR_container_name: $(TF_VAR_container_name)
           TF_VAR_location: $(TF_VAR_location)
+      - publish: $(System.DefaultWorkingDirectory)/theplan
+        artifact: theplan
   - stage: apply
     jobs:
     - job: terraform_apply
       steps:
-      - script: echo Hello, world!
-        displayName: 'Run a one-line script apply'
-
-      - script: |
-          echo Add other tasks to build, test, and deploy your project.
-          echo See https://aka.ms/yaml
-        displayName: 'Run a multi-line script apply'
+      - download: current
+        artifact: theplan
+      - task: AzureCLI@2
+        displayName: "Terraform Apply"
+        inputs:
+          azureSubscription: ARM_SUBSCRIPTION
+          scriptType: bash
+          addSpnToEnvironment: true
+          scriptLocation: inlineScript
+          inlineScript: |
+            echo "starting..."
+            export ARM_CLIENT_ID=$servicePrincipalId
+            export ARM_CLIENT_SECRET=$servicePrincipalKey
+            export ARM_TENANT_ID=$tenantId
+            terraform apply -f theplan
+        env:
+          TF_VAR_subscription_id: $(TF_VAR_subscription_id)
+          TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
+          TF_VAR_resource_group_name: $(TF_VAR_resource_group_name)
+          TF_VAR_key: $(TF_VAR_key)
+          TF_VAR_container_name: $(TF_VAR_container_name)
+          TF_VAR_location: $(TF_VAR_location)
 
 
