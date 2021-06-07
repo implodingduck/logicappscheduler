@@ -53,7 +53,6 @@ stages:
             export ARM_CLIENT_SECRET=$servicePrincipalKey
             export ARM_TENANT_ID=$tenantId
             terraform plan -out theplan
-            cp theplan $(System.DefaultWorkingDirectory)
         env:
           TF_VAR_subscription_id: $(TF_VAR_subscription_id)
           TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
@@ -69,6 +68,7 @@ stages:
       steps:
       - download: current
         artifact: theplan
+        downloadPath: $(System.DefaultWorkingDirectory)
       - task: AzureCLI@2
         displayName: "Terraform Apply"
         inputs:
