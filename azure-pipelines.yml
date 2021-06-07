@@ -68,6 +68,8 @@ stages:
       steps:
       - download: current
         artifact: theplan
+      - task: FuncToolsInstaller@0
+        displayName: "Install Function Tool"
       - task: AzureCLI@2
         displayName: "Terraform Init"
         inputs:
