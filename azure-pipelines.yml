@@ -62,6 +62,13 @@ stages:
           TF_VAR_location: $(TF_VAR_location)
       - publish: $(System.DefaultWorkingDirectory)/theplan
         artifact: theplan
+      - task: ManualValidation@0
+        timeoutInMinutes: 1440 # task times out in 1 day
+        inputs:
+          notifyUsers: |
+            scallighan@microsoft.com
+          instructions: 'Please validate the terraform plan and resume'
+          onTimeout: 'reject'
   - stage: apply
     jobs:
     - job: terraform_apply
