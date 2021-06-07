@@ -80,7 +80,7 @@ stages:
             export ARM_CLIENT_ID=$servicePrincipalId
             export ARM_CLIENT_SECRET=$servicePrincipalKey
             export ARM_TENANT_ID=$tenantId
-            terraform apply -auto-approve  $(Pipeline.Workspace)/theplan
+            terraform apply -auto-approve  $(Pipeline.Workspace)/theplan/theplan
         env:
           TF_VAR_subscription_id: $(TF_VAR_subscription_id)
           TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
