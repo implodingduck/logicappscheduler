@@ -67,7 +67,7 @@ stages:
     - job: Approval
       steps:
       - task: ManualValidation@0
-        timeoutInMinutes: 1440 
+        timeoutInMinutes: 5 #1440 
         inputs:
           notifyUsers: |
             scallighan@microsoft.com
