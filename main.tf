@@ -42,7 +42,6 @@ module "function" {
     resource_group_location = azurerm_resource_group.rg.location
     app_settings = {
       "FUNCTIONS_WORKER_RUNTIME" = "python"
-      "APPINSIGHTS_INSTRUMENTATIONKEY" = "${azurerm_application_insights.app.instrumentation_key}"
       "COSMOSDB_ENDPOINT"        = azurerm_cosmosdb_account.cosmos.endpoint
       "COSMOSDB_KEY"             = azurerm_cosmosdb_account.cosmos.primary_key
       "COSMOSDB_NAME"            = "${local.das_func_name}-db"
