@@ -68,7 +68,6 @@ stages:
       steps:
       - download: current
         artifact: theplan
-        downloadPath: $(System.DefaultWorkingDirectory)
       - task: AzureCLI@2
         displayName: "Terraform Apply"
         inputs:
@@ -81,7 +80,7 @@ stages:
             export ARM_CLIENT_ID=$servicePrincipalId
             export ARM_CLIENT_SECRET=$servicePrincipalKey
             export ARM_TENANT_ID=$tenantId
-            terraform apply -auto-approve $(System.DefaultWorkingDirectory)/theplan
+            terraform apply -auto-approve  $(Pipeline.Workspace)/theplan
         env:
           TF_VAR_subscription_id: $(TF_VAR_subscription_id)
           TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
