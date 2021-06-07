@@ -66,10 +66,11 @@ stages:
     jobs:
     - job: Approval
       steps:
-      - task: ManualValidation@0
-        timeoutInMinutes: 5 #1440 
+      - task: ManualIntervention@8 #ManualValidation@0
+        timeoutInMinutes: 1440 
         inputs:
-          notifyUsers: |
+          #notifyUsers: |
+          emailRecipients: |
             scallighan@microsoft.com
           instructions: 'Please validate the terraform plan and resume'
           onTimeout: 'reject'
