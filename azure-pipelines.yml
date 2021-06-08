@@ -95,6 +95,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 echo "starting..."
+                cd $(Pipeline.Workspace)
                 export ARM_CLIENT_ID=$servicePrincipalId
                 export ARM_CLIENT_SECRET=$servicePrincipalKey
                 export ARM_TENANT_ID=$tenantId
@@ -116,6 +117,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 echo "starting..."
+                cd $(Pipeline.Workspace)
                 export ARM_CLIENT_ID=$servicePrincipalId
                 export ARM_CLIENT_SECRET=$servicePrincipalKey
                 export ARM_TENANT_ID=$tenantId
