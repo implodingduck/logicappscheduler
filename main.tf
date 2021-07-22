@@ -26,6 +26,8 @@ locals {
   loc_for_naming = lower(replace(var.location, " ", ""))
 }
 
+data "azurerm_client_config" "current" {}
+
 resource "azurerm_resource_group" "rg" {
   name     = "rg-logicapp-scheduler"
   location = var.location
