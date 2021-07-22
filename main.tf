@@ -230,4 +230,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "20_04-lts-gen2"
     version   = "latest"
   }
+  tags = {
+    "managed_by" = "terraform"
+    "dossh"      = "true"
+  }
 }
