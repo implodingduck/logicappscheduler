@@ -80,7 +80,7 @@ module "sshfunction" {
   func_name = local.ssh_func_name
   resource_group_name = azurerm_resource_group.rg.name
   resource_group_location = azurerm_resource_group.rg.location
-  working_dir = "DetermineActiveSite"
+  working_dir = "PerformSSH"
   app_settings = {
     "FUNCTIONS_WORKER_RUNTIME" = "python"
     "SSH_PASSWORD"        = module.somevms.vmpassword

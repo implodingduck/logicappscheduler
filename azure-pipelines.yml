@@ -76,7 +76,7 @@ stages:
             export ARM_CLIENT_ID=$servicePrincipalId
             export ARM_CLIENT_SECRET=$servicePrincipalKey
             export ARM_TENANT_ID=$tenantId
-            mv DeterminActiveSite/local.settings.json.sample DeterminActiveSite/local.settings.json 
+            mv DetermineActiveSite/local.settings.json.sample DetermineActiveSite/local.settings.json 
             mv PerformSSH/local.settings.json.sample PerformSSH/local.settings.json 
             terraform apply -auto-approve theplan
         env:
