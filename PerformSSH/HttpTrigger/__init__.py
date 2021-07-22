@@ -4,7 +4,7 @@ import azure.functions as func
 import paramiko
 
 import os
-import datetime
+from datetime import datetime
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python PerformSSH HTTP trigger function processed a request.')
 
