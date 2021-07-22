@@ -110,12 +110,12 @@ resource "azurerm_cosmosdb_sql_container" "cosmos" {
 
 
 resource "azurerm_virtual_network" "default" {
-  name                = "${var.name}-vnet-${local.loc_for_naming}"
+  name                = "demo-vnet-${local.loc_for_naming}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   address_space       = [var.vnet_cidr]
   dns_servers         = []
-  tags                = local.merged_tags
+  tags                = {}
 }
 
 resource "azurerm_subnet" "default" {
@@ -161,7 +161,7 @@ resource "azurerm_key_vault" "kv" {
     key_permissions = []
     storage_permissions = []
   }
-  tags = local.merged_tags
+  tags = {}
 }
 
 resource "random_password" "password" {
