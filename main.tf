@@ -52,31 +52,6 @@ module "function" {
 
 }
 
-module "somevms" {
-  source   = "github.com/implodingduck/tfmodules//webappvm"
-  name     = "ssh-logicapp-demo"
-  location = "East US"
-  vm_size  = "Standard_B2s"
-  env      = "sbx"
-  public_ip_address = [{
-    "name" = "mypip"
-  }]
-  tags = {
-    owner = "implodingduck"
-    dossh = "true"
-  }
-}
-
-module "somevms2" {
-  source   = "github.com/implodingduck/tfmodules//webappvm"
-  name     = "no-ssh-logicapp-demo"
-  location = "East US"
-  vm_size  = "Standard_B2s"
-  env      = "sbx"
-  tags = {
-    owner = "implodingduck"
-  }
-}
 
 module "sshfunction" {
   source = "github.com/implodingduck/tfmodules//functionapp"
