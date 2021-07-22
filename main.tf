@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=2.62.0"
+      version = "=2.66.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -22,6 +22,7 @@ provider "azurerm" {
 
 locals {
   das_func_name = "das${random_string.unique.result}"
+  ssh_func_name = "ssh${random_string.unique.result}"
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -48,6 +49,42 @@ module "function" {
       "COSMOSDB_NAME"            = "${local.das_func_name}-db"
       "COSMOSDB_CONTAINER"       = "${local.das_func_name}-dbcontainer"
     }
+
+}
+
+module "somevms" {
+  source   = "github.com/implodingduck/tfmodules//webappvm"
+  name     = "ssh-logicapp-demo"
+  location = "East US"
+  vm_size  = "Standard_B2s"
+  env      = var.env
+  tags = {
+    owner = "implodingduck"
+    dossh = "true"
+  }
+}
+
+module "somevms2" {
+  source   = "github.com/implodingduck/tfmodules//webappvm"
+  name     = "no-ssh-logicapp-demo"
+  location = "East US"
+  vm_size  = "Standard_B2s"
+  env      = var.env
+  tags = {
+    owner = "implodingduck"
+  }
+}
+
+module "sshfunction" {
+  source = "github.com/implodingduck/tfmodules//functionapp"
+  func_name = local.ssh_func_name
+  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_location = azurerm_resource_group.rg.location
+  working_dir = "DetermineActiveSite"
+  app_settings = {
+    "FUNCTIONS_WORKER_RUNTIME" = "python"
+    "SSH_PASSWORD"        = somevms.vmpassword
+  }
 
 }
 
