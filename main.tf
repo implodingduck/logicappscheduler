@@ -57,7 +57,7 @@ module "somevms" {
   name     = "ssh-logicapp-demo"
   location = "East US"
   vm_size  = "Standard_B2s"
-  env      = var.env
+  env      = "sbx"
   tags = {
     owner = "implodingduck"
     dossh = "true"
@@ -69,7 +69,7 @@ module "somevms2" {
   name     = "no-ssh-logicapp-demo"
   location = "East US"
   vm_size  = "Standard_B2s"
-  env      = var.env
+  env      = "sbx"
   tags = {
     owner = "implodingduck"
   }
@@ -83,7 +83,7 @@ module "sshfunction" {
   working_dir = "DetermineActiveSite"
   app_settings = {
     "FUNCTIONS_WORKER_RUNTIME" = "python"
-    "SSH_PASSWORD"        = somevms.vmpassword
+    "SSH_PASSWORD"        = module.somevms.vmpassword
   }
 
 }
