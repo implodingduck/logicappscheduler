@@ -23,6 +23,7 @@ provider "azurerm" {
 locals {
   das_func_name = "das${random_string.unique.result}"
   ssh_func_name = "ssh${random_string.unique.result}"
+  loc_for_naming = lower(replace(var.location, " ", ""))
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -61,7 +62,7 @@ module "sshfunction" {
   working_dir = "PerformSSH"
   app_settings = {
     "FUNCTIONS_WORKER_RUNTIME" = "python"
-    "SSH_PASSWORD"        = module.somevms.vmpassword
+    "SSH_PASSWORD"        = random_password.password.result
   }
 
 }
@@ -103,4 +104,89 @@ resource "azurerm_cosmosdb_sql_container" "cosmos" {
   partition_key_path    = "/id"
   partition_key_version = 1
   throughput            = 400
+}
+
+
+resource "azurerm_virtual_network" "default" {
+  name                = "${var.name}-vnet-${local.loc_for_naming}"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  address_space       = [var.vnet_cidr]
+  dns_servers         = []
+  tags                = local.merged_tags
+}
+
+resource "azurerm_subnet" "default" {
+  name                 = "default-subnet-${local.loc_for_naming}"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.default.name
+  address_prefixes     = [var.default_subnet_cidr]
+
+}
+
+resource "azurerm_subnet" "vm" {
+  name                 = "demo-subnet-${local.loc_for_naming}"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.default.name
+  address_prefixes     = [var.vm_subnet_cidr]
+  service_endpoints    = []
+
+}
+
+resource "azurerm_key_vault" "kv" {
+  name                        = "${local.ssh_func_name}-kv"
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  enabled_for_disk_encryption = true
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = false
+
+  sku_name = "standard"
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    secret_permissions = [
+      "Get",
+      "List",
+      "Set",
+      "Delete",
+      "Purge"
+    ]
+    certificate_permissions = []
+    key_permissions = []
+    storage_permissions = []
+  }
+  tags = local.merged_tags
+}
+
+resource "random_password" "password" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
+
+resource "azurerm_key_vault_secret" "vmpassword" {
+  name         = "vmpassword"
+  value        = random_password.password.result
+  key_vault_id = azurerm_key_vault.kv.id
+  tags         = {}
+}
+
+
+
+resource "azurerm_public_ip" "pip" {
+  name                = "pipfor${local.ssh_func_name}"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  zones               = []
+  ip_tags             = {}
+  tags                = {}
+}
+
+data "template_file" "nginx-vm-cloud-init" {
+  template = file("${path.module}/install-nginx.sh")
 }
