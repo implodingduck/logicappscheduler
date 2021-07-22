@@ -20,4 +20,5 @@ variable "container_name" {
 
 variable "location" {
   type = string
+  default = "East US"
 }
