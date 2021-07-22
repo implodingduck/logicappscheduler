@@ -213,8 +213,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
   size                = "Standard_B2s"
   admin_username      = "adminuser"
   admin_password      = random_password.password.result
+  disable_password_authentication = false
   custom_data    = base64encode(data.template_file.nginx-vm-cloud-init.rendered)
-  
+
   network_interface_ids = [
     azurerm_network_interface.nic.id,
   ]
