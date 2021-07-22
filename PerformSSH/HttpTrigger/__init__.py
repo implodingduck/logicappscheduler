@@ -22,7 +22,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(hostname=name,
-                           username="azureuser",
+                           username="adminuser",
                            password=ssh_password)
         now = datetime.now()
         stdin, stdout, stderr = client.exec_command(f'echo "<br />Hello from ssh: {now.strftime("%m/%d/%Y %H:%M:%S")}" >> /var/www/index.html')
