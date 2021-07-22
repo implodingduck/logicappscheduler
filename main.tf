@@ -58,6 +58,9 @@ module "somevms" {
   location = "East US"
   vm_size  = "Standard_B2s"
   env      = "sbx"
+  public_ip_address = [{
+    "name" = "mypip"
+  }]
   tags = {
     owner = "implodingduck"
     dossh = "true"
