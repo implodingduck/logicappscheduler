@@ -25,7 +25,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                            username="adminuser",
                            password=ssh_password)
         now = datetime.now()
-        stdin, stdout, stderr = client.exec_command(f'echo "<br />Hello from ssh: {now.strftime("%m/%d/%Y %H:%M:%S")}" >> /var/www/index.html')
+        stdin, stdout, stderr = client.exec_command(f'echo "<br />Hello from ssh: {now.strftime("%m/%d/%Y %H:%M:%S")}" >> /var/www/html/index.html')
 
         out = stdout.read().decode().strip()
         error = stderr.read().decode().strip()
