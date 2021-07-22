@@ -167,7 +167,7 @@ resource "azurerm_key_vault" "kv" {
 resource "random_password" "password" {
   length           = 16
   special          = true
-  override_special = "_%@"
+  override_special = "_!"
 }
 
 resource "azurerm_key_vault_secret" "vmpassword" {
