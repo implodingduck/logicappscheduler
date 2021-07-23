@@ -241,7 +241,7 @@ data "template_file" "logicapp" {
   template = file("${path.module}/arm_logicapp_template.json")
   vars = {
     "subscription_id" = var.subscription_id
-    "displayname" = var.email
+    "displayName" = var.email
     "name" = "${local.ssh_func_name}-logicapp"
   }
 }
@@ -250,7 +250,7 @@ data "template_file" "arm" {
   template = file("${path.module}/arm_armcon_template.json")
   vars = {
     "subscription_id" = var.subscription_id
-    "displayname" = var.email
+    "displayName" = var.email
   }
 }
 
@@ -259,7 +259,7 @@ data "template_file" "vm" {
   template = file("${path.module}/arm_vmcon_template.json")
   vars = {
     "subscription_id" = var.subscription_id
-    "displayname" = var.email
+    "displayName" = var.email
   }
 }
 
