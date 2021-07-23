@@ -1,0 +1,598 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_exemplar_name": {
+            "defaultValue": "${name}",
+            "type": "String"
+        },
+        "__encodeURIComponent_concat__publicIPAddresses___body__Parse_JSON_2_____pip______externalid": {
+            "defaultValue": "/subscriptions/@{encodeURIComponent(body('Parse_JSON_4')?['subscription'])}/resourceGroups/@{encodeURIComponent(body('Parse_JSON_4')?['resourcegroup'])}/providers/@{encodeURIComponent(body('Parse_JSON_4')?['provider'])}/@{encodeURIComponent(concat('publicIPAddresses/',body('Parse_JSON_2')?['pip']))}",
+            "type": "String"
+        },
+        "sites_sshzyq0jngg_externalid": {
+            "defaultValue": "/subscriptions/${subscription_id}/resourceGroups/rg-logicapp-scheduler/providers/Microsoft.Web/sites/sshzyq0jngg",
+            "type": "String"
+        },
+        "virtualMachines___encodeURIComponent_body__Parse_JSON_____vm_____externalid": {
+            "defaultValue": "/subscriptions/@{encodeURIComponent('${subscription_id}')}/resourceGroups/@{encodeURIComponent(body('Parse_JSON')?['resourcegroup'])}/providers/Microsoft.Compute/virtualMachines/@{encodeURIComponent(body('Parse_JSON')?['vm'])}",
+            "type": "String"
+        },
+        "__encodeURIComponent_concat__networkInterfaces___body__Parse_JSON_2_____nic______externalid": {
+            "defaultValue": "/subscriptions/@{encodeURIComponent(body('Parse_JSON_2')?['subscription'])}/resourceGroups/@{encodeURIComponent(body('Parse_JSON_2')?['resourcegroup'])}/providers/@{encodeURIComponent(body('Parse_JSON_2')?['provider'])}/@{encodeURIComponent(concat('networkInterfaces/',body('Parse_JSON_2')?['nic']))}",
+            "type": "String"
+        },
+        "connections_arm_externalid": {
+            "defaultValue": "/subscriptions/${subscription_id}/resourceGroups/rg-logicapp-scheduler/providers/Microsoft.Web/connections/arm",
+            "type": "String"
+        },
+        "connections_azurevm_externalid": {
+            "defaultValue": "/subscriptions/${subscription_id}/resourceGroups/rg-logicapp-scheduler/providers/Microsoft.Web/connections/azurevm",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_exemplar_name')]",
+            "location": "eastus",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "manual": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {}
+                        }
+                    },
+                    "actions": {
+                        "For_each": {
+                            "foreach": "@body('List_resources_by_subscription')?['value']",
+                            "actions": {
+                                "Condition": {
+                                    "actions": {
+                                        "For_each_2": {
+                                            "foreach": "@body('Parse_JSON_3')?['properties']?['ipConfigurations']",
+                                            "actions": {
+                                                "For_each_3": {
+                                                    "foreach": "@body('Parse_JSON_5')?['value']",
+                                                    "actions": {
+                                                        "Append_to_array_variable_2": {
+                                                            "runAfter": {},
+                                                            "type": "AppendToArrayVariable",
+                                                            "inputs": {
+                                                                "name": "myarr",
+                                                                "value": "@items('For_each_3')?['properties']?['ipAddress']"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter": {
+                                                        "Parse_JSON_5": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Foreach"
+                                                },
+                                                "Parse_JSON_4": {
+                                                    "runAfter": {},
+                                                    "type": "ParseJson",
+                                                    "inputs": {
+                                                        "content": {
+                                                            "id": "@items('For_each_2')?['properties']?['publicIPAddress']['id']",
+                                                            "pip": "@split(items('For_each_2')?['properties']?['publicIPAddress']['id'], '/')?[8]",
+                                                            "provider": "@split(items('For_each_2')?['properties']?['publicIPAddress']['id'], '/')?[6]",
+                                                            "resourcegroup": "@split(items('For_each_2')?['properties']?['publicIPAddress']['id'], '/')?[4]",
+                                                            "subscription": "@split(items('For_each_2')?['properties']?['publicIPAddress']['id'], '/')?[2]"
+                                                        },
+                                                        "schema": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "pip": {
+                                                                    "type": "string"
+                                                                },
+                                                                "provider": {
+                                                                    "type": "string"
+                                                                },
+                                                                "resourcegroup": {
+                                                                    "type": "string"
+                                                                },
+                                                                "subscription": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "Parse_JSON_5": {
+                                                    "runAfter": {
+                                                        "Read_a_resource_2": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "ParseJson",
+                                                    "inputs": {
+                                                        "content": "@body('Read_a_resource_2')",
+                                                        "schema": {
+                                                            "properties": {
+                                                                "value": {
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "etag": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "id": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "location": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "properties": {
+                                                                                "properties": {
+                                                                                    "idleTimeoutInMinutes": {
+                                                                                        "type": "integer"
+                                                                                    },
+                                                                                    "ipAddress": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "ipConfiguration": {
+                                                                                        "properties": {
+                                                                                            "id": {
+                                                                                                "type": "string"
+                                                                                            }
+                                                                                        },
+                                                                                        "type": "object"
+                                                                                    },
+                                                                                    "provisioningState": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "publicIPAddressVersion": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "publicIPAllocationMethod": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "resourceGuid": {
+                                                                                        "type": "string"
+                                                                                    }
+                                                                                },
+                                                                                "type": "object"
+                                                                            },
+                                                                            "tags": {
+                                                                                "properties": {},
+                                                                                "type": "object"
+                                                                            },
+                                                                            "type": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "name",
+                                                                            "id",
+                                                                            "etag",
+                                                                            "location",
+                                                                            "tags",
+                                                                            "properties",
+                                                                            "type"
+                                                                        ],
+                                                                        "type": "object"
+                                                                    },
+                                                                    "type": "array"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "Read_a_resource_2": {
+                                                    "runAfter": {
+                                                        "Parse_JSON_4": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['arm']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "get",
+                                                        "path": "[parameters('__encodeURIComponent_concat__publicIPAddresses___body__Parse_JSON_2_____pip______externalid')]",
+                                                        "queries": {
+                                                            "x-ms-api-version": "2016-06-01"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "Parse_JSON_3": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Foreach"
+                                        },
+                                        "For_each_4": {
+                                            "foreach": "@variables('myarr')",
+                                            "actions": {
+                                                "HttpTrigger": {
+                                                    "runAfter": {},
+                                                    "type": "Function",
+                                                    "inputs": {
+                                                        "body": {
+                                                            "name": "@items('For_each_4')"
+                                                        },
+                                                        "function": {
+                                                            "id": "[concat(parameters('sites_sshzyq0jngg_externalid'), '/functions/HttpTrigger')]"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "runAfter": {
+                                                "For_each_2": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Foreach"
+                                        },
+                                        "Get_virtual_machine_2": {
+                                            "runAfter": {},
+                                            "type": "ApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connection": {
+                                                        "name": "@parameters('$connections')['azurevm']['connectionId']"
+                                                    }
+                                                },
+                                                "method": "get",
+                                                "path": "[parameters('virtualMachines___encodeURIComponent_body__Parse_JSON_____vm_____externalid')]",
+                                                "queries": {
+                                                    "api-version": "2019-12-01"
+                                                }
+                                            }
+                                        },
+                                        "Parse_JSON_2": {
+                                            "runAfter": {
+                                                "Get_virtual_machine_2": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": {
+                                                    "id": "@body('Get_virtual_machine_2')?['properties']['networkProfile']['networkInterfaces'][0]['id']",
+                                                    "nic": "@split(body('Get_virtual_machine_2')?['properties']['networkProfile']['networkInterfaces'][0]['id'], '/')?[8]",
+                                                    "provider": "@split(body('Get_virtual_machine_2')?['properties']['networkProfile']['networkInterfaces'][0]['id'], '/')?[6]",
+                                                    "resourcegroup": "@split(body('Get_virtual_machine_2')?['properties']['networkProfile']['networkInterfaces'][0]['id'], '/')?[4]",
+                                                    "subscription": "@split(body('Get_virtual_machine_2')?['properties']['networkProfile']['networkInterfaces'][0]['id'], '/')?[2]"
+                                                },
+                                                "schema": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "nic": {
+                                                            "type": "string"
+                                                        },
+                                                        "provider": {
+                                                            "type": "string"
+                                                        },
+                                                        "resourcegroup": {
+                                                            "type": "string"
+                                                        },
+                                                        "subscription": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "Parse_JSON_3": {
+                                            "runAfter": {
+                                                "Read_a_resource": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": "@body('Read_a_resource')",
+                                                "schema": {
+                                                    "properties": {
+                                                        "etag": {
+                                                            "type": "string"
+                                                        },
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "location": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "properties": {
+                                                            "properties": {
+                                                                "dnsSettings": {
+                                                                    "properties": {
+                                                                        "appliedDnsServers": {
+                                                                            "type": "array"
+                                                                        },
+                                                                        "dnsServers": {
+                                                                            "type": "array"
+                                                                        },
+                                                                        "internalDomainNameSuffix": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "enableIPForwarding": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "ipConfigurations": {
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "etag": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "id": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "properties": {
+                                                                                "properties": {
+                                                                                    "primary": {
+                                                                                        "type": "boolean"
+                                                                                    },
+                                                                                    "privateIPAddress": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "privateIPAddressVersion": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "privateIPAllocationMethod": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "provisioningState": {
+                                                                                        "type": "string"
+                                                                                    },
+                                                                                    "publicIPAddress": {
+                                                                                        "properties": {
+                                                                                            "id": {
+                                                                                                "type": "string"
+                                                                                            }
+                                                                                        },
+                                                                                        "type": "object"
+                                                                                    },
+                                                                                    "subnet": {
+                                                                                        "properties": {
+                                                                                            "id": {
+                                                                                                "type": "string"
+                                                                                            }
+                                                                                        },
+                                                                                        "type": "object"
+                                                                                    }
+                                                                                },
+                                                                                "type": "object"
+                                                                            },
+                                                                            "type": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "name",
+                                                                            "id",
+                                                                            "etag",
+                                                                            "type",
+                                                                            "properties"
+                                                                        ],
+                                                                        "type": "object"
+                                                                    },
+                                                                    "type": "array"
+                                                                },
+                                                                "macAddress": {
+                                                                    "type": "string"
+                                                                },
+                                                                "primary": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "provisioningState": {
+                                                                    "type": "string"
+                                                                },
+                                                                "resourceGuid": {
+                                                                    "type": "string"
+                                                                },
+                                                                "virtualMachine": {
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "tags": {
+                                                            "properties": {},
+                                                            "type": "object"
+                                                        },
+                                                        "type": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "Read_a_resource": {
+                                            "runAfter": {
+                                                "Parse_JSON_2": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "ApiConnection",
+                                            "inputs": {
+                                                "host": {
+                                                    "connection": {
+                                                        "name": "@parameters('$connections')['arm']['connectionId']"
+                                                    }
+                                                },
+                                                "method": "get",
+                                                "path": "[parameters('__encodeURIComponent_concat__networkInterfaces___body__Parse_JSON_2_____nic______externalid')]",
+                                                "queries": {
+                                                    "x-ms-api-version": "2016-06-01"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {
+                                        "Parse_JSON": [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "not": {
+                                                    "equals": [
+                                                        "@items('For_each')?['tags']",
+                                                        null
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "contains": [
+                                                    "@items('For_each')?['tags']",
+                                                    "dossh"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type": "If"
+                                },
+                                "Parse_JSON": {
+                                    "runAfter": {},
+                                    "type": "ParseJson",
+                                    "inputs": {
+                                        "content": {
+                                            "resourcegroup": "@split(items('For_each')?['id'], '/')?[4]",
+                                            "subscription": "@split(items('For_each')?['id'], '/')?[2]",
+                                            "vm": "@split(items('For_each')?['id'], '/')?[8]"
+                                        },
+                                        "schema": {
+                                            "properties": {
+                                                "resourcegroup": {
+                                                    "type": "string"
+                                                },
+                                                "subscription": {
+                                                    "type": "string"
+                                                },
+                                                "vm": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Initialize_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach"
+                        },
+                        "Initialize_variable": {
+                            "runAfter": {
+                                "List_resources_by_subscription": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "myarr",
+                                        "type": "array",
+                                        "value": []
+                                    }
+                                ]
+                            }
+                        },
+                        "List_resources_by_subscription": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['arm']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/subscriptions/@{encodeURIComponent('${subscription_id}')}/resources",
+                                "queries": {
+                                    "$filter": "resourceType eq 'Microsoft.Compute/virtualMachines'",
+                                    "x-ms-api-version": "2016-06-01"
+                                }
+                            }
+                        },
+                        "Response": {
+                            "runAfter": {
+                                "For_each": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "body": {
+                                    "hello": "world",
+                                    "values": "@variables('myarr')"
+                                },
+                                "statusCode": 200
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "arm": {
+                                "connectionId": "[parameters('connections_arm_externalid')]",
+                                "connectionName": "arm",
+                                "id": "/subscriptions/${subscription_id}/providers/Microsoft.Web/locations/eastus/managedApis/arm"
+                            },
+                            "azurevm": {
+                                "connectionId": "[parameters('connections_azurevm_externalid')]",
+                                "connectionName": "azurevm",
+                                "id": "/subscriptions/${subscription_id}/providers/Microsoft.Web/locations/eastus/managedApis/azurevm"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

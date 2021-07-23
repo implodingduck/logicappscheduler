@@ -37,3 +37,7 @@ variable "vm_subnet_cidr" {
     type = string
     default = "10.16.1.0/24"
 }
+
+variable "email" {
+  type = string
+}

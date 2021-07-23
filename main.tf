@@ -235,3 +235,62 @@ resource "azurerm_linux_virtual_machine" "vm" {
     "dossh"      = "true"
   }
 }
+
+
+data "template_file" "logicapp" {
+  template = file("${path.module}/arm_logicapp_template.json")
+  vars = {
+    "subscription_id" = var.subscription_id
+    "displayname" = var.email
+    "name" = "${ssh_func_name}-logicapp"
+  }
+}
+
+data "template_file" "arm" {
+  template = file("${path.module}/arm_armcon_template.json")
+  vars = {
+    "subscription_id" = var.subscription_id
+    "displayname" = var.email
+  }
+}
+
+
+data "template_file" "vm" {
+  template = file("${path.module}/arm_vmcon_template.json")
+  vars = {
+    "subscription_id" = var.subscription_id
+    "displayname" = var.email
+  }
+}
+
+resource "azurerm_template_deployment" "logicapp" {
+  name                = "${ssh_func_name}-logicapp"
+  resource_group_name = azurerm_resource_group.rg.name
+
+  template_body = data.template_file.logicapp.rendered
+  deployment_mode = "Incremental"
+}
+
+resource "azurerm_template_deployment" "logicapp" {
+  name                = "${ssh_func_name}-logicapp"
+  resource_group_name = azurerm_resource_group.rg.name
+
+  template_body = data.template_file.logicapp.rendered
+  deployment_mode = "Incremental"
+}
+
+resource "azurerm_template_deployment" "arm" {
+  name                = "${ssh_func_name}-armcon"
+  resource_group_name = azurerm_resource_group.rg.name
+
+  template_body = data.template_file.arm.rendered
+  deployment_mode = "Incremental"
+}
+
+resource "azurerm_template_deployment" "vm" {
+  name                = "${ssh_func_name}-vmcon"
+  resource_group_name = azurerm_resource_group.rg.name
+
+  template_body = data.template_file.vm.rendered
+  deployment_mode = "Incremental"
+}
