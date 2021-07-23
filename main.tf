@@ -271,14 +271,6 @@ resource "azurerm_template_deployment" "logicapp" {
   deployment_mode = "Incremental"
 }
 
-resource "azurerm_template_deployment" "logicapp" {
-  name                = "${ssh_func_name}-logicapp"
-  resource_group_name = azurerm_resource_group.rg.name
-
-  template_body = data.template_file.logicapp.rendered
-  deployment_mode = "Incremental"
-}
-
 resource "azurerm_template_deployment" "arm" {
   name                = "${ssh_func_name}-armcon"
   resource_group_name = azurerm_resource_group.rg.name
