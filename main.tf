@@ -272,7 +272,7 @@ resource "azurerm_network_security_group" "nsg" {
     source_port_range          = "*"
     destination_port_range     = "2266"
     source_address_prefixes      = module.sshfunction.possible_outbound_ip_addresses
-    destination_address_prefixes = "*"
+    destination_address_prefix = "*"
   }
 
   tags = {
