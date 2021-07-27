@@ -284,7 +284,7 @@ resource "azurerm_network_security_group" "nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "2266"
-    source_address_prefixes      = module.sshfunction.possible_outbound_ip_addresses
+    source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 
