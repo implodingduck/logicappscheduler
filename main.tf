@@ -193,6 +193,16 @@ data "template_file" "nginx-vm-cloud-init" {
   template = file("${path.module}/install-nginx.sh")
 }
 
+resource "azurerm_storage_account" "sa" {
+    name                        = "${local.ssh_func_name}-vmdiag"
+    resource_group_name         = azurerm_resource_group.rg.name
+    location                    = azurerm_resource_group.rg.location
+    account_replication_type    = "LRS"
+    account_tier                = "Standard"
+    tags                        = {}
+}
+
+
 resource "azurerm_network_interface" "nic" {
   name                = "${local.ssh_func_name}-vm-nic"
   location            = azurerm_resource_group.rg.location
@@ -229,6 +239,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
     offer     = "0001-com-ubuntu-server-focal"
     sku       = "20_04-lts-gen2"
     version   = "latest"
+  }
+  boot_diagnostics {
+    storage_uri = azurerm_storage_account.sa.primary_blob_endpoint
   }
   tags = {
     "managed_by" = "terraform"
