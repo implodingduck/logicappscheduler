@@ -194,7 +194,7 @@ data "template_file" "nginx-vm-cloud-init" {
 }
 
 resource "azurerm_storage_account" "sa" {
-    name                        = "${local.ssh_func_name}-vmdiag"
+    name                        = "${local.ssh_func_name}vmdiag"
     resource_group_name         = azurerm_resource_group.rg.name
     location                    = azurerm_resource_group.rg.location
     account_replication_type    = "LRS"
