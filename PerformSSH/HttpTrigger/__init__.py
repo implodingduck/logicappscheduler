@@ -22,6 +22,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(hostname=name,
+                           port=2266,
                            username="adminuser",
                            password=ssh_password)
         now = datetime.now()
