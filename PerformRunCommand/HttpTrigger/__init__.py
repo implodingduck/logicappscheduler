@@ -27,7 +27,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 f'echo "<br />Hello from RunCommand: {now.strftime("%m/%d/%Y %H:%M:%S")}" | sudo tee -a /var/www/html/index.html'
             ]
         }
-        poller = compute_client.virtual_machines.run_command(
+        poller = compute_client.virtual_machines.begin_run_command(
             rg,
             vm,
             run_command_parameters
