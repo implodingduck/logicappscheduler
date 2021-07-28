@@ -370,9 +370,11 @@ module "rasfunction" {
   app_settings = {
     "FUNCTIONS_WORKER_RUNTIME" = "python"
   }
-  app_identity = {
-    type = "UserAssigned"
-    identity_ids = [ azurerm_user_assigned_identity.runas.principal_id ]
-  }
+  app_identity = [
+    {
+      type = "UserAssigned"
+      identity_ids = [ azurerm_user_assigned_identity.runas.principal_id ]
+    }
+  ]
 
 }
