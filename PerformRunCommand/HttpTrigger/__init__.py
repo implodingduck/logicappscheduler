@@ -23,7 +23,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         run_command_parameters = {
             'command_id': 'RunShellScript', # For linux, don't change it
             'script': [
-                (f'echo "<br />Hello from RunCommand: {now.strftime("%m/%d/%Y %H:%M:%S")}" | sudo tee -a /var/www/html/index.html'
+                f'echo "<br />Hello from RunCommand: {now.strftime("%m/%d/%Y %H:%M:%S")}" | sudo tee -a /var/www/html/index.html'
             ]
         }
         poller = compute_client.virtual_machines.run_command(
