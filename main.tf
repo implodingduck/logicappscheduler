@@ -352,14 +352,14 @@ resource "azurerm_user_assigned_identity" "runas" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 
-  name = "${local.ras_func_name}-mi"
+  name = "${local.ras_func_name}-uai"
 }
 
-resource "azurerm_role_assignment" "role" {
-  scope                = azurerm_resource_group.rg.id
-  role_definition_name = "Contributor"
-  principal_id         = azurerm_user_assigned_identity.runas.principal_id
-}
+# resource "azurerm_role_assignment" "role" {
+#   scope                = azurerm_resource_group.rg.id
+#   role_definition_name = "Contributor"
+#   principal_id         = azurerm_user_assigned_identity.runas.principal_id
+# }
 
 module "rasfunction" {
   source = "github.com/implodingduck/tfmodules//functionapp"
