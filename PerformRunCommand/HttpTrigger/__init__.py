@@ -9,8 +9,9 @@ from datetime import datetime
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    rg = req.params.get('rg')
-    vm = req.params.get('vm')
+    req_body = req.get_json()
+    rg = req_body.get('rg')
+    vm = req_body.get('vm')
     
     if rg != None and vm != None:
         subscription_id = os.environ.get('SUBSCRIPTION_ID')
