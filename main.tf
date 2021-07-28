@@ -348,12 +348,12 @@ resource "azurerm_template_deployment" "vm" {
   deployment_mode = "Incremental"
 }
 
-resource "azurerm_user_assigned_identity" "runas" {
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
+# resource "azurerm_user_assigned_identity" "runas" {
+#   resource_group_name = azurerm_resource_group.rg.name
+#   location            = azurerm_resource_group.rg.location
 
-  name = "${local.ras_func_name}-uai"
-}
+#   name = "${local.ras_func_name}-uai"
+# }
 
 # resource "azurerm_role_assignment" "role" {
 #   scope                = azurerm_resource_group.rg.id
@@ -373,8 +373,8 @@ module "rasfunction" {
   }
   app_identity = [
     {
-      type = "UserAssigned"
-      identity_ids = [ azurerm_user_assigned_identity.runas.id ]
+      type = "SystemAssigned"
+      identity_ids = [  ]
     }
   ]
 
