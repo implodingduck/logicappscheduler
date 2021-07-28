@@ -369,6 +369,7 @@ module "rasfunction" {
   working_dir = "PerformRunCommand"
   app_settings = {
     "FUNCTIONS_WORKER_RUNTIME" = "python"
+    "SUBSCRIPTION_ID" = var.subscription_id
   }
   app_identity = [
     {
