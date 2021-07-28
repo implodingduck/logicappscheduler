@@ -373,7 +373,7 @@ module "rasfunction" {
   app_identity = [
     {
       type = "UserAssigned"
-      identity_ids = [ azurerm_user_assigned_identity.runas.principal_id ]
+      identity_ids = [ azurerm_user_assigned_identity.runas.client_id ]
     }
   ]
 
