@@ -23,6 +23,7 @@ provider "azurerm" {
 locals {
   das_func_name = "das${random_string.unique.result}"
   ssh_func_name = "ssh${random_string.unique.result}"
+  ras_func_name = "ras${random_string.unique.result}"
   loc_for_naming = lower(replace(var.location, " ", ""))
 }
 
@@ -345,4 +346,33 @@ resource "azurerm_template_deployment" "vm" {
 
   template_body = data.template_file.vm.rendered
   deployment_mode = "Incremental"
+}
+
+resource "azurerm_user_assigned_identity" "runas" {
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+
+  name = "${local.ras_func_name}-mi"
+}
+
+resource "azurerm_role_assignment" "role" {
+  scope                = azurerm_resource_group.rg.id
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_user_assigned_identity.runas.principal_id
+}
+
+module "rasfunction" {
+  source = "github.com/implodingduck/tfmodules//functionapp"
+  func_name = local.ras_func_name
+  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_location = azurerm_resource_group.rg.location
+  working_dir = "PerformRunCommand"
+  app_settings = {
+    "FUNCTIONS_WORKER_RUNTIME" = "python"
+  }
+  app_identity = {
+    type = "UserAssigned"
+    identity_ids = [ azurerm_user_assigned_identity.runas.principal_id ]
+  }
+
 }
