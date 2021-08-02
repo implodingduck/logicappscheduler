@@ -33,7 +33,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             run_command_parameters
         )
         result = poller.result() 
-        return func.HttpResponse(f"Hello, {rg} and {vm}. This HTTP triggered function executed successfully.")
+        logging.info(result)
+        return func.HttpResponse(f"Hello, {rg} and {vm}. This HTTP triggered function executed successfully. {result}")
     else:
         return func.HttpResponse(
              "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
