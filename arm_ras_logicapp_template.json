@@ -1,0 +1,165 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_rasexemplar_name": {
+            "defaultValue": "${name}",
+            "type": "String"
+        },
+        "sites_raszyq0jngg_externalid": {
+            "defaultValue": "/subscriptions/${subscription_id}/resourceGroups/rg-logicapp-scheduler/providers/Microsoft.Web/sites/raszyq0jngg",
+            "type": "String"
+        },
+        "connections_arm_externalid": {
+            "defaultValue": "/subscriptions/${subscription_id}/resourceGroups/rg-logicapp-scheduler/providers/Microsoft.Web/connections/arm",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_rasexemplar_name')]",
+            "location": "eastus",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "manual": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "actions": {
+                        "For_each": {
+                            "foreach": "@body('List_resources_by_subscription')?['value']",
+                            "actions": {
+                                "Condition": {
+                                    "actions": {
+                                        "HttpTrigger": {
+                                            "runAfter": {
+                                                "Parse_JSON": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type": "Function",
+                                            "inputs": {
+                                                "body": "@body('Parse_JSON')",
+                                                "function": {
+                                                    "id": "[concat(parameters('sites_raszyq0jngg_externalid'), '/functions/HttpTrigger')]"
+                                                }
+                                            }
+                                        },
+                                        "Parse_JSON": {
+                                            "runAfter": {},
+                                            "type": "ParseJson",
+                                            "inputs": {
+                                                "content": {
+                                                    "rg": "@split(items('For_each')?['id'], '/')?[4]",
+                                                    "vm": "@split(items('For_each')?['id'], '/')?[8]"
+                                                },
+                                                "schema": {
+                                                    "properties": {
+                                                        "rg": {
+                                                            "type": "string"
+                                                        },
+                                                        "vm": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {},
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "not": {
+                                                    "equals": [
+                                                        "@items('For_each')?['tags']",
+                                                        null
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "contains": [
+                                                    "@items('For_each')?['tags']",
+                                                    "dossh"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type": "If"
+                                }
+                            },
+                            "runAfter": {
+                                "List_resources_by_subscription": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach"
+                        },
+                        "List_resources_by_subscription": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['arm']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/subscriptions/@{encodeURIComponent('${subscription_id}')}/resources",
+                                "queries": {
+                                    "$filter": "resourceType eq 'Microsoft.Compute/virtualMachines'",
+                                    "x-ms-api-version": "2016-06-01"
+                                }
+                            }
+                        },
+                        "Response": {
+                            "runAfter": {
+                                "For_each": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "body": {
+                                    "message": "Done!"
+                                },
+                                "statusCode": 200
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "arm": {
+                                "connectionId": "[parameters('connections_arm_externalid')]",
+                                "connectionName": "arm",
+                                "id": "/subscriptions/${subscription_id}/providers/Microsoft.Web/locations/eastus/managedApis/arm"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

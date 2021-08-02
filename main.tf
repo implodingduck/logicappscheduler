@@ -307,6 +307,15 @@ data "template_file" "logicapp" {
   }
 }
 
+data "template_file" "raslogicapp" {
+  template = file("${path.module}/arm_ras_logicapp_template.json")
+  vars = {
+    "subscription_id" = var.subscription_id
+    "name" = "${local.ras_func_name}-logicapp"
+  }
+}
+
+
 data "template_file" "arm" {
   template = file("${path.module}/arm_armcon_template.json")
   vars = {
@@ -329,6 +338,14 @@ resource "azurerm_template_deployment" "logicapp" {
   resource_group_name = azurerm_resource_group.rg.name
 
   template_body = data.template_file.logicapp.rendered
+  deployment_mode = "Incremental"
+}
+
+resource "azurerm_template_deployment" "raslogicapp" {
+  name                = "${local.ras_func_name}-logicapp"
+  resource_group_name = azurerm_resource_group.rg.name
+
+  template_body = data.template_file.raslogicapp.rendered
   deployment_mode = "Incremental"
 }
 
