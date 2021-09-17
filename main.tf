@@ -428,7 +428,7 @@ SCHEMA
 
 resource "azurerm_logic_app_action_custom" "test" {
   name         = "Condition"
-  logic_app_id = azurerm_logic_app_workflow.example.id
+  logic_app_id = azurerm_logic_app_workflow.test.id
 
   body = <<BODY
  {
