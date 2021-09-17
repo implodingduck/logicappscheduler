@@ -426,3 +426,78 @@ SCHEMA
 
 }
 
+resource "azurerm_logic_app_action_custom" "test" {
+  name         = "Condition"
+  logic_app_id = azurerm_logic_app_workflow.example.id
+
+  body = <<BODY
+ {
+    "Condition": {
+        "actions": {
+            "Set_variable": {
+                "inputs": {
+                    "name": "retval",
+                    "value": "Hello, World is very original :P"
+                },
+                "runAfter": {},
+                "type": "SetVariable"
+            }
+        },
+        "else": {
+            "actions": {
+                "Set_variable_2": {
+                    "inputs": {
+                        "name": "retval",
+                        "value": "Greetings, @{triggerBody()?['name']} !!!"
+                    },
+                    "runAfter": {},
+                    "type": "SetVariable"
+                }
+            }
+        },
+        "expression": {
+            "and": [
+                {
+                    "equals": [
+                        "@triggerBody()?['name']",
+                        "hello"
+                    ]
+                }
+            ]
+        },
+        "runAfter": {
+            "Initialize_variable": [
+                "Succeeded"
+            ]
+        },
+        "type": "If"
+    },
+    "Initialize_variable": {
+        "inputs": {
+            "variables": [
+                {
+                    "name": "retval",
+                    "type": "string"
+                }
+            ]
+        },
+        "runAfter": {},
+        "type": "InitializeVariable"
+    },
+    "Response": {
+        "inputs": {
+            "body": "@variables('retval')",
+            "statusCode": 200
+        },
+        "kind": "Http",
+        "runAfter": {
+            "Condition": [
+                "Succeeded"
+            ]
+        },
+        "type": "Response"
+    }
+}
+BODY
+
+}
