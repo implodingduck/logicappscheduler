@@ -396,3 +396,9 @@ module "rasfunction" {
   ]
 
 }
+
+resource "azurerm_logic_app_workflow" "example" {
+  name                = "workflow_tf_type"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
