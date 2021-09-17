@@ -391,7 +391,7 @@ module "rasfunction" {
   app_identity = [
     {
       type = "SystemAssigned"
-      identity_ids = null
+      identity_ids = []
     }
   ]
 
