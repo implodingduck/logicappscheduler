@@ -402,3 +402,27 @@ resource "azurerm_logic_app_workflow" "example" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
+
+resource "azurerm_logic_app_workflow" "test" {
+  name                = "workflowresourcetype"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+resource "azurerm_logic_app_trigger_http_request" "test" {
+  name         = "the-http-trigger"
+  logic_app_id = azurerm_logic_app_workflow.test.id
+
+  schema = <<SCHEMA
+{
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        }
+    }
+}
+SCHEMA
+
+}
+
