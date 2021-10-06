@@ -82,7 +82,8 @@ stages:
             mv DetermineActiveSite/local.settings.json.sample DetermineActiveSite/local.settings.json 
             mv PerformSSH/local.settings.json.sample PerformSSH/local.settings.json
             mv PerformRunCommand/local.settings.json.sample PerformRunCommand/local.settings.json 
-            terraform apply -auto-approve theplan
+            #terraform apply -auto-approve theplan
+            terraform destroy -auto-approve
         env:
           TF_VAR_subscription_id: $(subscription-id)
           TF_VAR_storage_account_name: $(storage-account-name)
